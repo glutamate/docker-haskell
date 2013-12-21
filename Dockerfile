@@ -1,11 +1,12 @@
 # This file creates a container with the GHC Haskell Platform
 # installed and ready to use.
 #
-# Author: Martin Rehfeld
-# Date: 09/05/2013
+# Author: Martin Rehfeld 
+# forked with thanks, from https://github.com/martinrehfeld/docker-haskell-platform
+# Date: 09/05/2013 
 
 FROM ubuntu
-MAINTAINER Martin Rehfeld <martin.rehfeld@glnetworks.de>
+MAINTAINER Tom Nielsen <tomn@openbrain.org>
 
 RUN sed 's/main$/main universe/' -i /etc/apt/sources.list
 RUN apt-get update
@@ -33,8 +34,10 @@ RUN cd cabal-install-1.18.0.2; ./bootstrap.sh
 # Clean up build files
 RUN rm -rf ghc-7.6.3 cabal-install-1.18.0.2
 
+ENV PATH /.cabal/bin:$PATH
+
+RUN echo $PATH
+
 # Update Hackage package list and cabal-install
 RUN cabal update
 
-# Update cabal-install
-# RUN cabal install cabal-install
