@@ -4,7 +4,7 @@
 # Author: Martin Rehfeld
 # Date: 09/05/2013
 
-FROM ubuntu:12.10
+FROM ubuntu
 MAINTAINER Martin Rehfeld <martin.rehfeld@glnetworks.de>
 
 RUN sed 's/main$/main universe/' -i /etc/apt/sources.list
@@ -19,24 +19,22 @@ RUN apt-get install -y build-essential libedit2 libglu1-mesa-dev libgmp3-dev lib
 RUN wget -q http://www.haskell.org/ghc/dist/7.6.3/ghc-7.6.3-x86_64-unknown-linux.tar.bz2
 RUN tar xjf ghc-7.6.3-x86_64-unknown-linux.tar.bz2
 RUN rm ghc-7.6.3-x86_64-unknown-linux.tar.bz2
-RUN wget -q http://lambda.haskell.org/platform/download/2013.2.0.0/haskell-platform-2013.2.0.0.tar.gz
-RUN tar xzf haskell-platform-2013.2.0.0.tar.gz
-RUN rm haskell-platform-2013.2.0.0.tar.gz
+
+RUN wget -q http://hackage.haskell.org/package/cabal-install-1.18.0.2/cabal-install-1.18.0.2.tar.gz
+RUN tar xzf cabal-install-1.18.0.2.tar.gz
+RUN rm cabal-install-1.18.0.2.tar.gz
 
 # Build and install GHC
 RUN cd ghc-7.6.3; ./configure && make install
 
 # Build and install the Haskell Platform
-RUN cd haskell-platform-2013.2.0.0; ./configure && make && make install
+RUN cd cabal-install-1.18.0.2; ./bootstrap.sh
 
 # Clean up build files
-RUN rm -rf ghc-7.6.3 haskell-platform-2013.2.0.0
+RUN rm -rf ghc-7.6.3 cabal-install-1.18.0.2
 
 # Update Hackage package list and cabal-install
 RUN cabal update
 
-# Enable library-profiling
-RUN sed -E 's/(-- )?(library-profiling: )False/\2True/' -i .cabal/config
-
 # Update cabal-install
-RUN cabal install cabal-install
+# RUN cabal install cabal-install
